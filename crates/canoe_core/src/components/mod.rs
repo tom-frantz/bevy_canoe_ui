@@ -2,7 +2,7 @@ mod container_component;
 mod text_component;
 
 use crate::render_tree::RenderTree;
-use crate::{RenderFn, Renderable, UiDependencies};
+use crate::{RenderFn, Renderable};
 use bevy::prelude::Component;
 pub use container_component::{container, ContainerProps, ContainerState};
 pub use text_component::{text, TextProps, TextState};

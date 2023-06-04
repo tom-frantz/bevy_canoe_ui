@@ -10,8 +10,6 @@ pub(crate) mod render_tree;
 pub type RenderFn<P, S> =
     Box<dyn Sync + Send + for<'a> Fn(&P, &S, &'a Vec<RenderableBox>) -> Box<dyn Renderable + 'a>>;
 
-pub struct UiDependencies {}
-
 pub trait Renderable {
     fn render_tree(&self) -> RenderTree;
 }
@@ -22,6 +20,7 @@ pub struct RootUiComponent(pub RenderFn<(), ()>);
 fn register_root(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
+    // render_tree: ResMut<RenderTree>,
     q_root: Query<&RootUiComponent, Added<RootUiComponent>>,
 ) {
     let root = q_root.single(); // fn(_, _, _) -> UiComponent(..., canoe::text_fn)
@@ -33,12 +32,18 @@ fn register_root(
         .spawn(NodeBundle::default())
         .with_children(|cb| render_tree.spawn(cb, &asset_server));
     println!("{render_tree:#?}");
-    println!("Found root once.")
+    commands.insert_resource(render_tree);
+}
+
+fn print_render_tree(render_tree: Res<RenderTree>) {
+    println!("Render tree!");
+    println!("{render_tree:#?}");
 }
 
 pub struct CanoePlugin;
 impl Plugin for CanoePlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(register_root.in_base_set(StartupSet::PostStartup));
+        app.add_startup_system(register_root.in_base_set(StartupSet::PostStartup))
+            .add_system(print_render_tree);
     }
 }

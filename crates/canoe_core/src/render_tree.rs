@@ -1,7 +1,7 @@
 use crate::Renderable;
 use bevy::prelude::{Val::*, *};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Resource)]
 pub enum RenderTree {
     Container(Vec<RenderTree>),
     Text(String),
@@ -17,15 +17,16 @@ impl Renderable for RenderTree {
 }
 
 impl RenderTree {
-    pub fn spawn(&self, mut cmds: &mut ChildBuilder, asset_server: &AssetServer) {
+    pub fn spawn(&self, cmds: &mut ChildBuilder, asset_server: &AssetServer) {
         match self {
             RenderTree::Container(v) => {
                 cmds.spawn(NodeBundle {
                     style: Style {
-                        size: Size::all(Percent(100.)),
+                        size: Size::all(Px(100.)),
                         border: UiRect::all(Px(20.)),
                         ..default()
                     },
+                    background_color: BackgroundColor(Color::MIDNIGHT_BLUE),
                     ..default()
                 })
                 .with_children(|cb| {
