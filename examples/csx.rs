@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 use bevy_canoe_ui::prelude::*;
-use canoe_core::components::RenderableBox;
 use canoe_core::{components::*, Renderable, RootUiComponent};
 
 fn main() {
@@ -11,13 +10,20 @@ fn main() {
         .run();
 }
 
-fn root(_: &(), _: &(), _: &Vec<RenderableBox>) -> RenderableBox {
+fn root<'children>(
+    _: &(),
+    _: &(),
+    _: &'children Vec<RenderableBox>,
+) -> Box<dyn Renderable + 'children> {
     csx! {
-        <container>
-            <text
+        <Container>
+            <Text
                 text={String::from("123")}
             />
-        </container>
+            <Container>
+                <Text text={String::from("456")}/>
+            </Container>
+        </Container>
     }
 }
 

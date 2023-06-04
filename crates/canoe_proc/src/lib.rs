@@ -56,7 +56,7 @@ fn handle_element(node: &NodeElement) -> proc_macro2::TokenStream {
 
     quote! {
         Box::new(UiComponent {
-            props: Box::new(#props_expr),
+            props: #props_expr,
             state: Default::default(),
             render_fn: Box::new(#render_fn_ident),
             children: #children_expr,

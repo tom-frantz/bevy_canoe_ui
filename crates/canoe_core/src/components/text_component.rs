@@ -8,10 +8,10 @@ pub struct TextProps {
 #[derive(Default)]
 pub struct TextState {}
 
-pub fn text(
+pub fn text<'a>(
     props: &TextProps,
     _state: &TextState,
-    _children: &Vec<RenderableBox>,
-) -> Box<dyn Renderable> {
+    _children: &'a Vec<RenderableBox>,
+) -> Box<dyn Renderable + 'a> {
     Box::new(RenderTree::Text(props.text.to_string()))
 }

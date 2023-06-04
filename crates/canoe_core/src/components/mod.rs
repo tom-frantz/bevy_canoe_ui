@@ -15,20 +15,21 @@ where
     P: Send + Sync + 'static,
     S: Send + Sync + 'static + Default,
 {
-    pub props: Box<P>,
-    pub state: Box<S>,
+    pub props: P,
+    pub state: S,
     pub render_fn: RenderFn<P, S>,
     pub children: Vec<RenderableBox>,
     pub component_name: String,
 }
 
-impl<'a, P, S> Renderable for UiComponent<P, S>
+impl<P, S> Renderable for UiComponent<P, S>
 where
     P: Send + Sync + 'static,
     S: Send + Sync + 'static + Default,
 {
     fn render_tree(&self) -> RenderTree {
-        let renderables: RenderableBox = (self.render_fn)(&self.props, &self.state, &self.children);
+        let renderables: Box<dyn Renderable> =
+            (self.render_fn)(&self.props, &self.state, &self.children);
         renderables.render_tree()
     }
 }

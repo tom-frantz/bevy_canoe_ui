@@ -6,16 +6,15 @@ pub struct ContainerProps {}
 #[derive(Default)]
 pub struct ContainerState {}
 
-pub fn container(
+pub fn container<'a>(
     props: &ContainerProps,
     state: &ContainerState,
-    children: &Vec<RenderableBox>,
-) -> RenderableBox {
-    let managed: Vec<&RenderableBox> = children.iter().map(|r| r).collect();
-    Box::new(managed)
+    children: &'a Vec<RenderableBox>,
+) -> Box<dyn Renderable + 'a> {
+    Box::new(children)
 }
 
-impl Renderable for Vec<&RenderableBox> {
+impl Renderable for &Vec<RenderableBox> {
     fn render_tree(&self) -> RenderTree {
         let render_tree_vec = self.iter().map(|rb| rb.render_tree()).collect();
         RenderTree::Container(render_tree_vec)
