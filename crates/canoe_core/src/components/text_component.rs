@@ -1,14 +1,17 @@
-use crate::{ui_primitive::UiPrimitive::Text, Renderable, RenderableBox};
+use crate::components::RenderableBox;
+use crate::render_tree::RenderTree;
+use crate::Renderable;
 
 pub struct TextProps {
     pub text: String,
 }
 #[derive(Default)]
 pub struct TextState {}
+
 pub fn text(
     props: &TextProps,
-    state: &TextState,
+    _state: &TextState,
     _children: &Vec<RenderableBox>,
 ) -> Box<dyn Renderable> {
-    Box::new(Text(props.text.to_string(), Default::default()))
+    Box::new(RenderTree::Text(props.text.to_string()))
 }

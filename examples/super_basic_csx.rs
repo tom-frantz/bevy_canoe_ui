@@ -11,13 +11,11 @@ fn main() {
         .run();
 }
 
-fn root(_: &(), _: &(), _: &Vec<RenderableBox>) -> RenderableBox {
+fn root<'d>(_: &(), _: &(), _: &Vec<RenderableBox>) -> RenderableBox {
     csx! {
-        <container>
-            <text
-                text={String::from("123")}
-            />
-        </container>
+        <text
+            text={String::from("123")}
+        />
     }
 }
 

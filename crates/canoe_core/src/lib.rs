@@ -1,55 +1,36 @@
-use crate::ui_primitive::UiPrimitive;
+use crate::render_tree::RenderTree;
 use bevy::prelude::*;
+use components::RenderableBox;
 use std::any::{Any, TypeId};
 
 pub mod components;
 pub mod prelude;
-pub(crate) mod ui_primitive;
+pub(crate) mod render_tree;
 
-pub type RenderFn<P, S> = Box<dyn Fn(&P, &S, &Vec<RenderableBox>) -> RenderableBox>;
-pub type RenderableBox = Box<dyn Renderable>;
+pub type RenderFn<P, S> = Box<dyn Sync + Send + Fn(&P, &S, &Vec<RenderableBox>) -> RenderableBox>;
+
+pub struct UiDependencies {}
 
 pub trait Renderable {
-    fn to_ui_primitives(&self) -> UiPrimitive;
+    fn render_tree(&self) -> RenderTree;
 }
 
 #[derive(Component)]
-pub struct UiComponent<P, S>
-where
-    P: Send + Sync + 'static,
-    S: Send + Sync + 'static + Default,
-{
-    pub props: Box<P>,
-    pub state: Box<S>,
-    pub render_fn: RenderFn<P, S>,
-    pub children: Vec<RenderableBox>,
-    pub component_name: String,
-}
+pub struct RootUiComponent(pub RenderFn<(), ()>);
 
-impl<P, S> Renderable for UiComponent<P, S>
-where
-    P: Send + Sync + 'static,
-    S: Send + Sync + 'static + Default,
-{
-    fn to_ui_primitives(&self) -> UiPrimitive {
-        // Get the 'guts' of a component
-        let primitives = (*self.render_fn)(&self.props, &self.state, &self.children);
-        // Then recursively render down into it.
-        primitives.to_ui_primitives()
-    }
-}
+fn register_root(q_root: Query<&RootUiComponent, Added<RootUiComponent>>) {
+    let root = q_root.single(); // fn(_, _, _) -> UiComponent(..., canoe::text_fn)
+    let empty_vec = vec![];
+    let root_renderable: RenderableBox = (root.0)(&(), &(), &empty_vec); // UiComponent(..., canoe::text_fn)
 
-impl<P, S> UiComponent<P, S>
-where
-    P: Send + Sync + 'static,
-    S: Send + Sync + 'static + Default,
-{
-    fn render(&self) {
-        let primitive_tree = self.to_ui_primitives();
-    }
+    let render_tree = root_renderable.render_tree();
+    println!("{render_tree:#?}");
+    println!("Found root once.")
 }
 
 pub struct CanoePlugin;
 impl Plugin for CanoePlugin {
-    fn build(&self, app: &mut App) {}
+    fn build(&self, app: &mut App) {
+        app.add_startup_system(register_root.in_base_set(StartupSet::PostStartup));
+    }
 }

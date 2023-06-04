@@ -18,6 +18,10 @@ name = "csx"
 path = "examples/csx.rs"
 
 
+[[example]]
+name = "super_basic_csx"
+path = "examples/super_basic_csx.rs"
+
 [dependencies]
 bevy = "0.10.1"
 canoe_core = { path = "crates/canoe_core"}

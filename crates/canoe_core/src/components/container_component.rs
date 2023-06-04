@@ -1,4 +1,6 @@
-use crate::{RenderableBox, UiPrimitive::Container};
+use crate::components::RenderableBox;
+use crate::render_tree::RenderTree;
+use crate::Renderable;
 
 pub struct ContainerProps {}
 #[derive(Default)]
@@ -9,5 +11,13 @@ pub fn container(
     state: &ContainerState,
     children: &Vec<RenderableBox>,
 ) -> RenderableBox {
-    Box::new(Container(children.to_vec(), Default::default()))
+    let managed: Vec<&RenderableBox> = children.iter().map(|r| r).collect();
+    Box::new(managed)
+}
+
+impl Renderable for Vec<&RenderableBox> {
+    fn render_tree(&self) -> RenderTree {
+        let render_tree_vec = self.iter().map(|rb| rb.render_tree()).collect();
+        RenderTree::Container(render_tree_vec)
+    }
 }
