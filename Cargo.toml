@@ -13,6 +13,11 @@ members = [
 name = "basic"
 path = "examples/basic.rs"
 
+[[example]]
+name = "csx"
+path = "examples/csx.rs"
+
+
 [dependencies]
 bevy = "0.10.1"
 canoe_core = { path = "crates/canoe_core"}

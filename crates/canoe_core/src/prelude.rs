@@ -1,5 +1,5 @@
-pub use crate::CanoePlugin;
+pub use crate::{CanoePlugin, Renderable, UiComponent};
 
-pub use crate::UiComponent;
+pub use crate::components::*;
 
-pub use crate::TextProps;
+pub use canoe_proc::csx;

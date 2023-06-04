@@ -11,22 +11,25 @@ fn main() {
 }
 
 fn my_screen(_props: &(), _state: &()) -> Box<dyn Renderable> {
+    println!("in my screen!");
     Box::new(UiComponent {
         props: Box::new(()),
         state: Box::new(()),
         render_fn: Box::new(my_comp),
+        component_name: "my_comp".into(),
     })
 }
 
 fn my_comp(_props: &(), _state: &()) -> Box<dyn Renderable> {
     // return <TextComponent>Hello!</TextComponent>
-
+    println!("in my comp!");
     Box::new(UiComponent {
         props: Box::new(TextProps {
             text: String::from("Hey there gamer!"),
         }),
         state: Box::new(TextState {}),
         render_fn: Box::new(text_component),
+        component_name: "text_component".into(),
     })
 }
 
@@ -37,6 +40,7 @@ fn render_basic_ui(mut commands: Commands) {
         props: Box::new(()),
         state: Box::new(()),
         render_fn: Box::new(my_screen),
+        component_name: "my_screen".into(),
     };
     let x = my_comp.render();
 }
